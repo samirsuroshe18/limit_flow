@@ -12,7 +12,6 @@ function App() {
     const token = Cookies.get("accessToken");
 
     if (token) {
-      // Verify the token with the server
       axios
         .get("http://18.234.206.219:10000/api/v1/limit-flow/get-current-user", {
           headers: { Authorization: `Bearer ${token}` },
@@ -45,14 +44,14 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-start justify-center p-6">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-2 sm:p-4 md:p-6">
       {isLoggedIn ? (
-        <div>
+        <div className="w-full">
           <Table />
           <div className="mt-4 flex justify-center">
             <button
               onClick={handleLogout}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+              className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
             >
               Logout
             </button>
