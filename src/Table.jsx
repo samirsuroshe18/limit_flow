@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import useMeterListData from "./hooks/useMeterListData";
 
-const TableRow = ({ rowData }) => {
+const TableRow = ({ rowData, setRefresh }) => {
   const [limit, setLimit] = useState("");
 
   const handleSubmit = async () => {
@@ -10,37 +10,8 @@ const TableRow = ({ rowData }) => {
       alert("please enter valid input");
       return;
     }
-    const data = [
-      { id: 119, meter_id: 333 },
-      { id: 89, meter_id: 351 },
-      { id: 122, meter_id: 331 },
-      { id: 16, meter_id: 383 },
-      { id: 125, meter_id: 355 },
-      { id: 126, meter_id: 355 },
-      { id: 127, meter_id: 355 },
-      { id: 134, meter_id: 356 },
-      { id: 144, meter_id: 355 },
-      { id: 145, meter_id: 353 },
-      { id: 131, meter_id: 330 },
-      { id: 133, meter_id: 415 },
-      { id: 105, meter_id: 335 },
-      { id: 106, meter_id: 352 },
-      { id: 121, meter_id: 357 },
-      { id: 147, meter_id: 352 },
-      { id: 149, meter_id: 352 },
-      { id: 154, meter_id: 354 },
-      { id: 155, meter_id: 260 },
-      { id: 157, meter_id: 356 },
-      { id: 158, meter_id: 356 },
-      { id: 160, meter_id: 335 },
-      { id: 161, meter_id: 394 },
-    ];
 
-    const alertId = data
-      .filter((entry) => entry.meter_id === rowData.meter_id)
-      .map((entry) => entry.id);
-
-    const id = alertId[0];
+    const id = rowData.alert_id;
     const meter_id = rowData.meter_id;
     const maximum_threshold = limit;
 
@@ -61,9 +32,9 @@ const TableRow = ({ rowData }) => {
         }
       );
 
+      setLimit("");
+      setRefresh((prev) => prev + 1);
       alert("Successful!");
-
-      console.log("Response:", res.data);
     } catch (error) {
       if (error.response) {
         console.error("Response error:", {
@@ -95,6 +66,9 @@ const TableRow = ({ rowData }) => {
         <td className="p-2 text-center min-w-[100px]">{rowData.today_flow}</td>
         <td className="p-2 text-center min-w-[140px]">{rowData.dtime}</td>
         <td className="p-2 text-center min-w-[120px]">
+          {rowData.maximum_threshold}
+        </td>
+        <td className="p-2 text-center min-w-[120px]">
           <input
             type="text"
             className="border p-1 rounded w-full"
@@ -117,7 +91,8 @@ const TableRow = ({ rowData }) => {
 };
 
 const Table = () => {
-  const data = useMeterListData();
+  const [refresh, setRefresh] = useState(0);
+  const data = useMeterListData(refresh);
 
   return (
     <div className="container mx-auto p-4">
@@ -130,13 +105,18 @@ const Table = () => {
               <th className="p-2 text-center">Instant Flow</th>
               <th className="p-2 text-center">Today's Flow</th>
               <th className="p-2 text-center">Last Seen</th>
+              <th className="p-2 text-center">Max Threshold</th>
               <th className="p-2 text-center">Limit</th>
               <th className="p-2 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
             {data.map((row) => (
-              <TableRow key={row.meter_id} rowData={row} />
+              <TableRow
+                key={row.meter_id}
+                rowData={row}
+                setRefresh={setRefresh}
+              />
             ))}
           </tbody>
         </table>
