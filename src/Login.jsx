@@ -12,7 +12,7 @@ const Login = ({ setIsLoggedIn }) => {
 
     try {
       const response = await axios.post(
-        "http://18.234.206.219:10000/api/v1/limit-flow/login",
+        "https://www.water.iotsense.in/api/v1/limit-flow/login",
         {
           email: username,
           password,

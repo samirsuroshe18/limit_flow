@@ -13,9 +13,12 @@ function App() {
 
     if (token) {
       axios
-        .get("http://18.234.206.219:10000/api/v1/limit-flow/get-current-user", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .get(
+          "https://www.water.iotsense.in/api/v1/limit-flow/get-current-user",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
         .then(() => {
           setIsLoggedIn(true);
         })
