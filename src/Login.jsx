@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 
 const Login = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState("");
@@ -12,23 +11,25 @@ const Login = ({ setIsLoggedIn }) => {
 
     try {
       const response = await axios.post(
-        "https://www.water.iotsense.in/api/v1/limit-flow/login",
+        `${import.meta.env.VITE_DOMAIN}/api/v1/limit-flow/login`,
         {
           email: username,
           password,
-        }
+        },
+        { withCredentials: true }
       );
 
-      const accessToken = response.data.data.accessToken;
-      const refreshToken = response.data.data.refreshToken;
-      // Save the JWT token in cookies
-      Cookies.set("accessToken", accessToken);
-      Cookies.set("refreshToken", refreshToken);
-
-      // Set login state
-      setIsLoggedIn(true);
+      if (response.status == 200) {
+        setIsLoggedIn(true);
+        alert(response.data.message);
+      } else {
+        setIsLoggedIn(false);
+        alert(response.data.message);
+      }
     } catch (err) {
+      console.error(err);
       setError("Invalid username or password");
+      setIsLoggedIn(false);
     }
   };
 
@@ -56,6 +57,7 @@ const Login = ({ setIsLoggedIn }) => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              autoComplete="username"
             />
           </div>
 
@@ -73,6 +75,7 @@ const Login = ({ setIsLoggedIn }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              autoComplete="password"
             />
           </div>
 

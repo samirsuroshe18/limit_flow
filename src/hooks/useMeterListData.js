@@ -4,22 +4,22 @@ function useMeterListData(refresh) {
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   useEffect(() => {
-    fetch(`https://api.nbsense.in/water_ms/water_list_data`
+    fetch(`${import.meta.env.VITE_NBSENSE_DOMAIN}/water_ms/water_list_data`
       , {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer 475e703f-dc25-4e07-9eb7-db86cd19e6c0`,
+          'Authorization': `Bearer ${import.meta.env.VITE_TOKEN}`,
           'Content-Type': 'application/json'
         }
       }
     ).then((response) => response.json())
       .then((response) => setData(response))
 
-    fetch(`https://api.nbsense.in/water_ms/alert_list`
+    fetch(`${import.meta.env.VITE_NBSENSE_DOMAIN}/water_ms/alert_list`
       , {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer 475e703f-dc25-4e07-9eb7-db86cd19e6c0`,
+          'Authorization': `Bearer ${import.meta.env.VITE_TOKEN}`,
           'Content-Type': 'application/json'
         }
       }

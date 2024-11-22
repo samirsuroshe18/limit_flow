@@ -1,45 +1,46 @@
 import Table from "./Table";
 import Login from "./Login";
-import Cookies from "js-cookie";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = Cookies.get("accessToken");
-
-    if (token) {
-      axios
-        .get(
-          "https://www.water.iotsense.in/api/v1/limit-flow/get-current-user",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-        .then(() => {
-          setIsLoggedIn(true);
-        })
-        .catch(() => {
-          setIsLoggedIn(false);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
+    axios
+      .get(
+        `${import.meta.env.VITE_DOMAIN}/api/v1/limit-flow/get-current-user`,
+        {
+          withCredentials: true,
+        }
+      )
+      .then(() => {
+        setIsLoggedIn(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoggedIn(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const handleLogout = () => {
-    // Clear the cookies
-    Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
-
-    // Set login state to false
-    setIsLoggedIn(false);
+    axios
+      .get(`${import.meta.env.VITE_DOMAIN}/api/v1/limit-flow/logout`, {
+        withCredentials: true,
+      })
+      .then(() => {
+        setIsLoggedIn(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   if (loading) {
